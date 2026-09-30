@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{% block title %}PocketSmart AI{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<nav>
+    <a class="brand" href="/">PocketSmart AI</a>
+
+    <div id="navLinks">
+        <a href="/">Home</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+    </div>
+</nav>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+<div class="footer">
+    PocketSmart AI · Smart budget planning with generative AI
+</div>
+
+<script src="/static/app.js"></script>
+
+<script>
+async function updateNavbar() {
+
+    const navLinks = document.getElementById("navLinks");
+
+    try {
+
+        const response = await fetch("/api/session-info", {
+            credentials: "include"
+        });
+
+        if (response.ok) {
+
+            const user = await response.json();
+
+            navLinks.innerHTML = `
+                <a href="/">Home</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/history">History</a>
+                <span>👤 ${user.name}</span>
+                <a href="#" id="logoutBtn">Logout</a>
+            `;
+
+            document.getElementById("logoutBtn").addEventListener("click", async function(e) {
+
+                e.preventDefault();
+
+                await fetch("/api/logout", {
+                    method: "POST",
+                    credentials: "include"
+                });
+
+                window.location.href = "/";
+            });
+
+        }
+
+    } catch (error) {
+        console.log("Not logged in");
+    }
+}
+
+updateNavbar();
+</script>
+
+</body>
+</html>

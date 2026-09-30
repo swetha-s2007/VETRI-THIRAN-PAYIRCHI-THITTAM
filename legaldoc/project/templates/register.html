@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+
+<div class="card form-card">
+
+    <h1>Create Account</h1>
+
+    <div id="message"></div>
+
+    <form id="registerForm">
+
+        <label for="name">Name</label>
+        <input
+            id="name"
+            type="text"
+            placeholder="Enter your name"
+            required
+        >
+
+        <label for="email">Email</label>
+        <input
+            id="email"
+            type="email"
+            placeholder="Enter your email"
+            required
+        >
+
+        <label for="password">Password</label>
+        <input
+            id="password"
+            type="password"
+            placeholder="Minimum 6 characters"
+            minlength="6"
+            required
+        >
+
+        <button type="submit" class="btn">
+            Register
+        </button>
+
+    </form>
+
+    <p>
+        Already registered?
+        <a href="/login">Login</a>
+    </p>
+
+</div>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    const requestData = {
+        name: nameInput.value.trim(),
+        email: emailInput.value.trim(),
+        password: passwordInput.value
+    };
+
+    console.log("Sending registration data:", requestData);
+
+    try {
+
+        await api("/api/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        alert("Registration successful!");
+
+        window.location.href = "/login";
+
+    } catch (error) {
+
+        showError(error);
+
+    }
+
+});
+</script>
+
+{% endblock %}
